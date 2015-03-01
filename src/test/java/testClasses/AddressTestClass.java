@@ -3,7 +3,6 @@ package testClasses;
 public class AddressTestClass {
 
 	public int publicInt;
-	public String publicSubString;
+	public String publicSubString = "street";
 	private String privateSubString;
-	public StreetTestClass streetTestClass = new StreetTestClass();
 }

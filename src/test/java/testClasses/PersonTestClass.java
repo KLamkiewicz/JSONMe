@@ -4,7 +4,7 @@ public class PersonTestClass {
 
 	public int id;
 	public Integer otherId;
-	public String name;
+	public String name = "Adam";
 	private String surnname;
 	private int privateId;
 	public AddressTestClass subClass = new AddressTestClass();
