@@ -9,8 +9,8 @@ public class AddressTestClass {
 	public String[] singleArray = new String[5];
 	
 	public AddressTestClass(){
-		//arrayOfStrings[0][0] = "ELEMENT IN ARRAY";
-		//arrayOfStrings[3][3] = "Last Element";
+//		arrayOfStrings[0][0] = "ELEMENT IN ARRAY";
+//		arrayOfStrings[3][3] = "Last Element";
 		singleArray[0] = "Single";
 	}
 }

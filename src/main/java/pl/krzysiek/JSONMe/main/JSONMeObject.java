@@ -46,17 +46,37 @@ public final class JSONMeObject{
 	}
 	
 	private static StringBuilder arrayIterate(Field f, StringBuilder sb, Object o) throws IllegalArgumentException, IllegalAccessException{
-		for(int i=0; i<Array.getLength(f.get(o)); i++){
-			Object obj = Array.get(f.get(o), i);
-			if(obj!=null && obj.getClass().isArray()){
-				arrayIterate(f, sb, obj);
-			}else{
-				sb.append("\""+Array.get(f.get(o), i)+"\"");
+		sb.append("[");
+		
+		if(isUnreasonable(f.get(o).getClass().getSimpleName().replace("[]", ""))){
+			for(int i=0; i<Array.getLength(f.get(o)); i++){
+				if(Array.get(f.get(o),i)!=null){
+				Object obj = Array.get(f.get(o), i);
+					if(obj.getClass().isArray()){
+						arrayIterate(f, sb, obj);
+					}
+				}else{
+					sb.append("\""+Array.get(f.get(o), i)+"\"");
+				}
+				if(i!=Array.getLength(f.get(o))-1){
+					sb.append(",");
+				}
 			}
-			if(i!=Array.getLength(f.get(o))-1){
-				sb.append(",");
+		}else{
+			for(int i=0; i<Array.getLength(f.get(o)); i++){
+				if(Array.get(f.get(o), i) == null){
+					sb.append("{}");
+				}else{
+					convert(Array.get(f.get(o), i));
+				}
+				
+				if(i!=Array.getLength(f.get(o))-1){
+					sb.append(",");
+				}
 			}
 		}
+
+		sb.append("]");
 		return sb;
 	}
 	
@@ -71,35 +91,10 @@ public final class JSONMeObject{
 				Field f = (Field) it.next();
 				try {	
 					sb.append("\"" + f.getName() + "\": ");
-					if(f.get(o)!=null && f.get(o).getClass().isArray()){
-						sb.append("[");
-						String cleanArray = f.get(o).getClass().getComponentType().getSimpleName().toString().replace("[]", "");
-						if(isUnreasonable(cleanArray)){
-							for(int i=0; i<Array.getLength(f.get(o)); i++){
-								Object obj = Array.get(f.get(o), i);
-//								if(obj!=null && obj.getClass().isArray()){
-//									arrayIterate(f, sb, obj);
-//								}else{
-									sb.append("\""+Array.get(f.get(o), i)+"\"");
-								//}
-								if(i!=Array.getLength(f.get(o))-1){
-									sb.append(",");
-								}
-							}
-						}else{
-							for(int i=0; i<Array.getLength(f.get(o)); i++){
-								if(Array.get(f.get(o), i) == null){
-									sb.append("{}");
-								}else{
-									convert(Array.get(f.get(o), i));
-								}
-								
-								if(i!=Array.getLength(f.get(o))-1){
-									sb.append(",");
-								}
-							}
-						}
-						sb.append("]");
+					if(f.get(o) != null && f.get(o).getClass().isArray()){
+						
+						arrayIterate(f, sb, o);
+
 					}
 					
 					else if(!isUnreasonable(f.getType().getSimpleName())){
@@ -130,7 +125,6 @@ public final class JSONMeObject{
 	}
 	
 	private static boolean isUnreasonable(Object u){
-		//System.out.println(u);
 		for(Types type : Types.values()){
 			if(type.toString().equals(u)){
 				return true;
