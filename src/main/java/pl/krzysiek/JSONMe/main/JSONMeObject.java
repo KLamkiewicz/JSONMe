@@ -67,7 +67,19 @@ public final class JSONMeObject{
 						sb.append("[");
 						if(isUnreasonable(f.get(o).getClass().getComponentType().toString())){
 							for(int i=0; i<Array.getLength(f.get(o)); i++){
-								sb.append(Array.get(f.get(o), i));
+								sb.append("\""+Array.get(f.get(o), i)+"\"");
+								if(i!=Array.getLength(f.get(o))-1){
+									sb.append(",");
+								}
+							}
+						}else{
+							for(int i=0; i<Array.getLength(f.get(o)); i++){
+								if(Array.get(f.get(o), i) == null){
+									sb.append("{}");
+								}else{
+									convert(Array.get(f.get(o), i));
+								}
+								
 								if(i!=Array.getLength(f.get(o))-1){
 									sb.append(",");
 								}
