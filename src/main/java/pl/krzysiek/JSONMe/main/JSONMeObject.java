@@ -45,17 +45,25 @@ public final class JSONMeObject{
 		return convert(o).toString();
 	}
 	
+	private static StringBuilder arrayIterate(Field f, StringBuilder sb, Object o) throws IllegalArgumentException, IllegalAccessException{
+		for(int i=0; i<Array.getLength(f.get(o)); i++){
+			Object obj = Array.get(f.get(o), i);
+			if(obj!=null && obj.getClass().isArray()){
+				arrayIterate(f, sb, obj);
+			}else{
+				sb.append("\""+Array.get(f.get(o), i)+"\"");
+			}
+			if(i!=Array.getLength(f.get(o))-1){
+				sb.append(",");
+			}
+		}
+		return sb;
+	}
+	
 	private static Object convert(Object o) {
 		List<Field> fieldList = new ArrayList<Field>();
 		fieldList.addAll(Arrays.asList(o.getClass().getFields()));
-		
-		if(o.getClass().isArray()){
-			for(int i=0; i<Array.getLength(o); i++){
-				//System.out.println(Array.get(o, i));
-			}
-		}
-		
-		
+
 		Iterator<Field> it = fieldList.iterator();
 		if(!fieldList.isEmpty()){
 			sb.append("{\n ");
@@ -65,9 +73,15 @@ public final class JSONMeObject{
 					sb.append("\"" + f.getName() + "\": ");
 					if(f.get(o).getClass().isArray()){
 						sb.append("[");
-						if(isUnreasonable(f.get(o).getClass().getComponentType().toString())){
+						String cleanArray = f.get(o).getClass().getComponentType().getSimpleName().toString().replace("[]", "");
+						if(isUnreasonable(cleanArray)){
 							for(int i=0; i<Array.getLength(f.get(o)); i++){
-								sb.append("\""+Array.get(f.get(o), i)+"\"");
+								Object obj = Array.get(f.get(o), i);
+//								if(obj!=null && obj.getClass().isArray()){
+//									arrayIterate(f, sb, obj);
+//								}else{
+									sb.append("\""+Array.get(f.get(o), i)+"\"");
+								//}
 								if(i!=Array.getLength(f.get(o))-1){
 									sb.append(",");
 								}
@@ -116,6 +130,7 @@ public final class JSONMeObject{
 	}
 	
 	private static boolean isUnreasonable(Object u){
+		//System.out.println(u);
 		for(Types type : Types.values()){
 			if(type.toString().equals(u)){
 				return true;
