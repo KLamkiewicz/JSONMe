@@ -19,14 +19,19 @@ import pl.krzysiek.JSONMe.exceptions.*;
  * 
  */
 public final class JSONMeObject{
-	//private static String json;
 	private static final StringBuilder sb = new StringBuilder();
 
 	private JSONMeObject(){
 		
 	}
 	
-	
+	/**
+	 * 
+	 * @param o Object for conversion
+	 * @throws NoDataToConvertException for null passed
+	 * @throws UnreasonableJSONException for single values passed
+	 * @return String converted from Object
+	 */
 	public static String getJSON(Object o) throws NoDataToConvertException, UnreasonableJSONException {
 		if(o==null)
 			throw new NoDataToConvertException("Cannot convert a null object");
@@ -35,10 +40,7 @@ public final class JSONMeObject{
 			if(type.toString().equals(o.getClass().getSimpleName()))
 				throw new UnreasonableJSONException("Cannot create JSON from just a value");
 		}
-		//sb = new StringBuilder();
 		sb.delete(0, sb.length());
-		//json = convert(o).toString();
-		
 		return convert(o).toString();
 	}
 	
@@ -78,7 +80,7 @@ public final class JSONMeObject{
 			
 			sb.append("}\n");
 		}else{
-			sb.append("\"null\"");
+			sb.append("{}");
 		}
 		
 		return sb;
