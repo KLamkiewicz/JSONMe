@@ -71,7 +71,7 @@ public final class JSONMeObject{
 				Field f = (Field) it.next();
 				try {	
 					sb.append("\"" + f.getName() + "\": ");
-					if(f.get(o).getClass().isArray()){
+					if(f.get(o)!=null && f.get(o).getClass().isArray()){
 						sb.append("[");
 						String cleanArray = f.get(o).getClass().getComponentType().getSimpleName().toString().replace("[]", "");
 						if(isUnreasonable(cleanArray)){

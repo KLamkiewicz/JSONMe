@@ -25,7 +25,7 @@ public class MainConversionTest {
 //		System.out.println(JSONMeObject.getJSON(new StreetTestClass()));
 //		System.out.println(JSONMeObject.getJSON(new PersonTestClass()));
 //		System.out.println(JSONMeObject.getJSON(new EmptyClass()));
-		
+//		
 		System.out.println(JSONMeObject.getJSON(new StreetTestClass()));
 	}
 	
