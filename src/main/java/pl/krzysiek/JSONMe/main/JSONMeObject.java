@@ -45,39 +45,46 @@ public final class JSONMeObject{
 		return convert(o).toString();
 	}
 	
-	private static StringBuilder arrayIterate(Field f, StringBuilder sb, Object o) throws IllegalArgumentException, IllegalAccessException{
+	private static void arrayIterate(Object o) throws IllegalArgumentException, IllegalAccessException{
 		sb.append("[");
-		
-		if(isUnreasonable(f.get(o).getClass().getSimpleName().replace("[]", ""))){
-			for(int i=0; i<Array.getLength(f.get(o)); i++){
-				if(Array.get(f.get(o),i)!=null){
-				Object obj = Array.get(f.get(o), i);
-					if(obj.getClass().isArray()){
-						arrayIterate(f, sb, obj);
+
+		if(isUnreasonable(o.getClass().getSimpleName().replace("[]", ""))){
+			if(o!=null && o.getClass().isArray()){
+				for(int i=0; i<Array.getLength(o); i++){
+					Object ob = Array.get(o, i);
+					if(ob!=null && ob.getClass().isArray()){
+						arrayIterate(ob);
+					}else{
+						sb.append("\"" + ob + "\"");
 					}
-				}else{
-					sb.append("\""+Array.get(f.get(o), i)+"\"");
-				}
-				if(i!=Array.getLength(f.get(o))-1){
-					sb.append(",");
+					
+					if(i!=Array.getLength(o)-1){
+						sb.append(",");
+					}
 				}
 			}
 		}else{
-			for(int i=0; i<Array.getLength(f.get(o)); i++){
-				if(Array.get(f.get(o), i) == null){
-					sb.append("{}");
-				}else{
-					convert(Array.get(f.get(o), i));
-				}
-				
-				if(i!=Array.getLength(f.get(o))-1){
-					sb.append(",");
+			if(o!=null && o.getClass().isArray()){
+				for(int i=0; i<Array.getLength(o); i++){
+					Object ob = Array.get(o, i);
+					if(ob!=null && ob.getClass().isArray()){
+						arrayIterate(ob);
+					}else{
+						if(ob!=null)
+							convert(ob);
+						else{
+							sb.append("{}");
+						}
+					}
+					
+					if(i!=Array.getLength(o)-1){
+						sb.append(",");
+					}
 				}
 			}
 		}
 
 		sb.append("]");
-		return sb;
 	}
 	
 	private static Object convert(Object o) {
@@ -92,11 +99,10 @@ public final class JSONMeObject{
 				try {	
 					sb.append("\"" + f.getName() + "\": ");
 					if(f.get(o) != null && f.get(o).getClass().isArray()){
-						
-						arrayIterate(f, sb, o);
-
+						//Array conversion
+						arrayIterate(f.get(o));
 					}
-					
+					//Recursively acquire fields from a class
 					else if(!isUnreasonable(f.getType().getSimpleName())){
 						convert(f.get(o));
 					}else if(f.get(o) == null){
