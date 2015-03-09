@@ -1,6 +1,7 @@
 package pl.krzysiek.JSONMe.main;
 
 public enum Types {
+	Enum("Enumerate"),
 	primitiveInt("int"),
 	Integer("Integer"), 
 	String("String"),

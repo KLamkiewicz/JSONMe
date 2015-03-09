@@ -94,6 +94,7 @@ public final class JSONMeObject{
 	}
 	
 	private static Object convert(Object o) {
+
 		List<Field> fieldList = new ArrayList<Field>();
 		if(o!=null)
 			fieldList.addAll(Arrays.asList(o.getClass().getFields()));
@@ -103,9 +104,13 @@ public final class JSONMeObject{
 			sb.append("{\n ");
 			while(it.hasNext()){
 				Field f = (Field) it.next();
+				
 				try {	
 					sb.append("\"" + f.getName() + "\": ");
-					if(f.get(o) != null && f.get(o).getClass().isArray()){
+					if(f.getType().isEnum()){
+						sb.append("\""+ f.get(o) + "\"");
+					}
+					else if(f.get(o) != null && f.get(o).getClass().isArray()){
 						//Array conversion
 						arrayIterate(f.get(o));
 					}

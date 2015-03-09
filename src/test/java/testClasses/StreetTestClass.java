@@ -3,6 +3,8 @@ package testClasses;
 import java.util.ArrayList;
 import java.util.List;
 
+import pl.krzysiek.JSONMe.main.Types;
+
 public class StreetTestClass {
 
 	private double imPrivate = 40d;
@@ -15,16 +17,15 @@ public class StreetTestClass {
 	public AddressTestClass rrrrr;
 	public char charTest = 'x';
 	public String stringTest = "xzzx";
+	public Types enum1 = Types.String;
+	public Types zz = Types.primitiveDouble;
 	
 	public StreetTestClass(){
-		//rList.add("ZZZ");
-		//rList.add("GGGG");
-	
+		
 		filledArray[0][0][0] = 5;
 		filledArray[1][0][0] = 10;
 		filledArray[0][1][0] = 40;
 		t[0] = "zxzx";
-		
 		
 		addresses[0] = new AddressTestClass();
 		addresses[1] = new AddressTestClass();
