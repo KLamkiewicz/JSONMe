@@ -20,32 +20,30 @@ import pl.krzysiek.JSONMe.exceptions.*;
  * 
  */
 public final class JSONMeObject{
-	private static final StringBuilder sb = new StringBuilder();
 
 	private JSONMeObject(){
-		
+
 	}
 	
 	/**
 	 * 
 	 * @param o Object for conversion
-	 * @throws NoDataToConvertException for null passed
+	 * @throws NoDataToConvertException when null is passed
 	 * @throws UnreasonableJSONException for single values passed
-	 * @return String converted from Object
+	 * @return Valid JSON String converted from Object
 	 */
 	public static String getJSON(Object o) throws NoDataToConvertException, UnreasonableJSONException {
 		if(o==null)
 			throw new NoDataToConvertException("Cannot convert a null object");
 		
-		for(Types type : Types.values()){
-			if(type.toString().equals(o.getClass().getSimpleName()))
-				throw new UnreasonableJSONException("Cannot create JSON from just a value");
-		}
-		sb.delete(0, sb.length());
-		return convert(o).toString();
+		if(isUnreasonable(o.getClass().getSimpleName()))
+			throw new UnreasonableJSONException("Cannot create JSON from just a value");
+
+		StringBuilder sb = new StringBuilder();
+		return convert(o, sb).toString();
 	}
 	
-	private static void arrayIterate(Object o) throws IllegalArgumentException, IllegalAccessException{
+	private static void arrayIterate(Object o, StringBuilder sb) throws IllegalArgumentException, IllegalAccessException{
 		sb.append("[");
 
 		if(isUnreasonable(o.getClass().getSimpleName().replace("[]", ""))){
@@ -53,7 +51,7 @@ public final class JSONMeObject{
 				for(int i=0; i<Array.getLength(o); i++){
 					Object ob = Array.get(o, i);
 					if(ob!=null && ob.getClass().isArray()){
-						arrayIterate(ob);
+						arrayIterate(ob, sb);
 					}else{
 						if(ob==null){
 							sb.append(ob);
@@ -74,10 +72,10 @@ public final class JSONMeObject{
 				for(int i=0; i<Array.getLength(o); i++){
 					Object ob = Array.get(o, i);
 					if(ob!=null && ob.getClass().isArray()){
-						arrayIterate(ob);
+						arrayIterate(ob, sb);
 					}else{
 						if(ob!=null)
-							convert(ob);
+							convert(ob, sb);
 						else{
 							sb.append("{}");
 						}
@@ -93,7 +91,7 @@ public final class JSONMeObject{
 		sb.append("]");
 	}
 	
-	private static Object convert(Object o) {
+	private static Object convert(Object o, StringBuilder sb) {
 
 		List<Field> fieldList = new ArrayList<Field>();
 		if(o!=null)
@@ -112,11 +110,11 @@ public final class JSONMeObject{
 					}
 					else if(f.get(o) != null && f.get(o).getClass().isArray()){
 						//Array conversion
-						arrayIterate(f.get(o));
+						arrayIterate(f.get(o), sb);
 					}
 					//Recursively acquire fields from a class
 					else if(!isUnreasonable(f.getType().getSimpleName())){
-						convert(f.get(o));
+						convert(f.get(o), sb);
 					}else if(f.get(o) == null){
 						sb.append("null");
 					}else{

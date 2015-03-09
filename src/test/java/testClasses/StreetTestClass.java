@@ -12,7 +12,6 @@ public class StreetTestClass {
 	public int[][][] filledArray = new int[4][4][4];
 	public int[] emptyArray = new int[4];
 	public String[] t = new String[3];
-	//public List<String> rList = new ArrayList<String>();
 	public AddressTestClass[] addresses = new AddressTestClass[4];
 	public AddressTestClass rrrrr;
 	public char charTest = 'x';
