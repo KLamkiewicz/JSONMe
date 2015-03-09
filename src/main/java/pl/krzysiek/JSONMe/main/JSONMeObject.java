@@ -55,7 +55,13 @@ public final class JSONMeObject{
 					if(ob!=null && ob.getClass().isArray()){
 						arrayIterate(ob);
 					}else{
-						sb.append("\"" + ob + "\"");
+						if(ob==null){
+							sb.append(ob);
+						}else if(ob.getClass()==Character.class || ob.getClass()==String.class)
+							sb.append("\"" + ob + "\"");
+						else{
+							sb.append(ob);
+						}
 					}
 					
 					if(i!=Array.getLength(o)-1){
@@ -89,7 +95,8 @@ public final class JSONMeObject{
 	
 	private static Object convert(Object o) {
 		List<Field> fieldList = new ArrayList<Field>();
-		fieldList.addAll(Arrays.asList(o.getClass().getFields()));
+		if(o!=null)
+			fieldList.addAll(Arrays.asList(o.getClass().getFields()));
 
 		Iterator<Field> it = fieldList.iterator();
 		if(!fieldList.isEmpty()){
@@ -106,9 +113,13 @@ public final class JSONMeObject{
 					else if(!isUnreasonable(f.getType().getSimpleName())){
 						convert(f.get(o));
 					}else if(f.get(o) == null){
-						sb.append("\"null\"");
+						sb.append("null");
 					}else{
-						sb.append("\"" + f.get(o) + "\"");
+						if(f.get(o).getClass()==Character.class || f.get(o).getClass()==String.class)
+							sb.append("\"" + f.get(o) + "\"");
+						else{
+							sb.append(f.get(o));
+						}
 					}
 				} catch (Exception e) {
 					e.printStackTrace();

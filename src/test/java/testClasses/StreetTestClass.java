@@ -12,6 +12,9 @@ public class StreetTestClass {
 	public String[] t = new String[3];
 	//public List<String> rList = new ArrayList<String>();
 	public AddressTestClass[] addresses = new AddressTestClass[4];
+	public AddressTestClass rrrrr;
+	public char charTest = 'x';
+	public String stringTest = "xzzx";
 	
 	public StreetTestClass(){
 		//rList.add("ZZZ");
